@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send JSON to Activepiece Webhook</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9fbfe;
+      color: #333;
+      margin: 40px;
+    }
+    h1 { color: #0078d7; }
+    pre {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      overflow-x: auto;
+    }
+    button {
+      background-color: #0078d7;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover { background-color: #005fa3; }
+  </style>
+</head>
+<body>
+  <h1>Activepiece Webhook Demo</h1>
+  <p>Click the button to send JSON data to your Activepiece flow.</p>
+
+  <button onclick="sendData()">Send Data</button>
+
+  <h2>Webhook Response</h2>
+  <pre id="response">Waiting for response...</pre>
+
+  <script>
+    async function sendData() {
+      // 👇 Replace this with your own webhook URL
+      const webhookUrl = "https://cloud.activepieces.com/api/v1/webhooks/XzlM7ALud6SjHF7Engblo";
+
+      // 👇 Your JSON payload
+      const payload = {
+        "city": "New York",
+        "working_hours": {
+          "monday": {"start": "09:00", "end": "17:00"},
+          "tuesday": {"start": "09:00", "end": "17:00"},
+          "wednesday": {"start": "09:00", "end": "17:00"},
+          "thursday": {"start": "09:00", "end": "17:00"},
+          "friday": {"start": "09:00", "end": "17:00"}
+        },
+        "timestamp": "2024-06-07T10:00:00Z",
+        "transfer_message_inside": "You are being transferred to our main line.",
+        "transfer_message_outside": "Our office is closed. Please call back during working hours.",
+        "dedicated_number": "+1234567890"
+      };
+
+      // Show progress
+      const output = document.getElementById("response");
+      output.textContent = "Sending data to Activepiece...";
+
+      try {
+        const res = await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const text = await res.text();
+        output.textContent = "✅ Success! Webhook responded:\n\n" + text;
+      } catch (err) {
+        output.textContent = "❌ Error:\n" + err;
+      }
+    }
+  </script>
+</body>
+</html>
